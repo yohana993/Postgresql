@@ -1,0 +1,91 @@
+CREATE TABLE Proveedor (
+  codigo INTEGER PRIMARY KEY,
+  nombre VARCHAR(50),
+  direccion VARCHAR(100),
+  ciudad VARCHAR(50),
+  provincia VARCHAR(50)
+);
+
+CREATE TABLE Categoria (
+  codigo INTEGER PRIMARY KEY,
+  nombre VARCHAR(50)
+);
+
+CREATE TABLE Pieza (
+  codigo INTEGER PRIMARY KEY,
+  nombre VARCHAR(50),
+  color VARCHAR(50),
+  precio DECIMAL(10,2),
+  categoria INTEGER,
+  FOREIGN KEY (categoria) REFERENCES Categoria(codigo)
+);
+
+CREATE TABLE Suministro (
+  proveedor INTEGER,
+  pieza INTEGER,
+  fecha DATE,
+  cantidad INTEGER,
+  PRIMARY KEY (proveedor, pieza, fecha),
+  FOREIGN KEY (proveedor) REFERENCES Proveedor(codigo),
+  FOREIGN KEY (pieza) REFERENCES Pieza(codigo)
+);
+
+CREATE TABLE Automovil (
+  marca VARCHAR(50),
+  modelo VARCHAR(50),
+  precio DECIMAL(10,2),
+  descuento DECIMAL(10,2),
+  potencia_fiscal INTEGER,
+  cilindrada INTEGER,
+  PRIMARY KEY (marca, modelo)
+);
+
+CREATE TABLE Equipamiento (
+  automovil_marca VARCHAR(50),
+  automovil_modelo VARCHAR(50),
+  pieza INTEGER,
+  caracteristicas_serie BOOLEAN,
+  extra DECIMAL(10,2),
+  PRIMARY KEY (automovil_marca, automovil_modelo, pieza),
+  FOREIGN KEY (automovil_marca, automovil_modelo) REFERENCES Automovil(marca, modelo),
+  FOREIGN KEY (pieza) REFERENCES Pieza(codigo)
+);
+
+CREATE TABLE Stock (
+  numero_bastidor VARCHAR(50) PRIMARY KEY,
+  automovil_marca VARCHAR(50),
+  automovil_modelo VARCHAR(50),
+  concesionario VARCHAR(50),
+  FOREIGN KEY (automovil_marca, automovil_modelo) REFERENCES Automovil(marca, modelo)
+);
+
+CREATE TABLE Servicio_oficial (
+  INE VARCHAR(50) PRIMARY KEY,
+  nombre VARCHAR(50),
+  domicilio VARCHAR(100),
+  concesionario VARCHAR(50),
+  FOREIGN KEY (concesionario) REFERENCES Concesionario(nombre)
+);
+
+CREATE TABLE Venta (
+  automovil_marca VARCHAR(50),
+  automovil_modelo VARCHAR(50),
+  vendedor VARCHAR(50),
+  servicio_oficial_INE VARCHAR(50),
+  precio DECIMAL(10,2),
+  modo_pago VARCHAR(50),
+  extras VARCHAR(200),
+  fecha_entrega DATE,
+  matricula VARCHAR(50),
+  stock BOOLEAN,
+  PRIMARY KEY (automovil_marca, automovil_modelo, vendedor, servicio_oficial_INE),
+  FOREIGN KEY (automovil_marca, automovil_modelo) REFERENCES Automovil(marca, modelo),
+  FOREIGN KEY (vendedor) REFERENCES Vendedor(nombre),
+  FOREIGN KEY (servicio_oficial_INE) REFERENCES Servicio_oficial(INE)
+);
+
+CREATE TABLE Vendedor (
+  INE VARCHAR(50) PRIMARY KEY,
+  nombre VARCHAR(50),
+  domicilio VARCHAR(100)
+);
